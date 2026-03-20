@@ -14,10 +14,7 @@ import {
 import { db } from "@/db";
 import { presentationPlans } from "@/db/schema";
 import { parseSectionsFromResponse } from "@/parsers/section-parser";
-import {
-  canPerformAction,
-  canUseModel,
-} from "@/services/subscription-service";
+import { canPerformAction, canUseModel } from "@/services/subscription-service";
 import { logUserAction } from "@/services/action-logger";
 import {
   SLIDE_TEMPLATES,
@@ -44,10 +41,7 @@ import { DEFAULT_IMAGE_MODEL, getModelById } from "@/models";
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
-function createSubscriptionErrorResponse(
-  reply: FastifyReply,
-  reason: string
-) {
+function createSubscriptionErrorResponse(reply: FastifyReply, reason: string) {
   return reply.code(403).send({ error: reason });
 }
 
@@ -84,7 +78,7 @@ const WEIGHTED_TEMPLATES = [
 function getRandomTemplate(): SlidesTemplates {
   const totalWeight = WEIGHTED_TEMPLATES.reduce(
     (sum, { weight }) => sum + weight,
-    0
+    0,
   );
   let random = Math.random() * totalWeight;
   for (const { key, weight } of WEIGHTED_TEMPLATES) {
@@ -179,7 +173,11 @@ export default fp(async (fastify: FastifyInstance) => {
         slidesCount = 5,
         slidesPlan,
         model,
-        contentSettings = { tone: "neutral", whom: "all", contentStyle: "less" },
+        contentSettings = {
+          tone: "neutral",
+          whom: "all",
+          contentStyle: "less",
+        },
         attachments,
       } = slidesGenerationSchema.parse(req.body);
 
@@ -198,7 +196,7 @@ export default fp(async (fastify: FastifyInstance) => {
       const slidesCheck = await canPerformAction(
         userId,
         "maxSlidesPerGeneration",
-        slidesCount
+        slidesCount,
       );
       if (!slidesCheck.allowed) {
         return createSubscriptionErrorResponse(reply, slidesCheck.reason!);
@@ -207,7 +205,7 @@ export default fp(async (fastify: FastifyInstance) => {
       // Check daily generation limit
       const dailyLimitCheck = await canPerformAction(
         userId,
-        "maxGenerationsPerDay"
+        "maxGenerationsPerDay",
       );
       if (!dailyLimitCheck.allowed) {
         return createSubscriptionErrorResponse(reply, dailyLimitCheck.reason!);
@@ -216,10 +214,13 @@ export default fp(async (fastify: FastifyInstance) => {
       // Check monthly generation limit
       const monthlyLimitCheck = await canPerformAction(
         userId,
-        "maxGenerationsPerMonth"
+        "maxGenerationsPerMonth",
       );
       if (!monthlyLimitCheck.allowed) {
-        return createSubscriptionErrorResponse(reply, monthlyLimitCheck.reason!);
+        return createSubscriptionErrorResponse(
+          reply,
+          monthlyLimitCheck.reason!,
+        );
       }
 
       // Check attachments limit
@@ -227,12 +228,12 @@ export default fp(async (fastify: FastifyInstance) => {
         const attachmentsCheck = await canPerformAction(
           userId,
           "maxAttachmentsPerGeneration",
-          attachments.length
+          attachments.length,
         );
         if (!attachmentsCheck.allowed) {
           return createSubscriptionErrorResponse(
             reply,
-            attachmentsCheck.reason!
+            attachmentsCheck.reason!,
           );
         }
       }
@@ -298,7 +299,7 @@ export default fp(async (fastify: FastifyInstance) => {
             err instanceof Error ? err.message : "Stream processing error",
         });
       }
-    }
+    },
   );
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -332,7 +333,7 @@ export default fp(async (fastify: FastifyInstance) => {
       const slidesCheck = await canPerformAction(
         userId,
         "maxSlidesPerGeneration",
-        slidesCount
+        slidesCount,
       );
       if (!slidesCheck.allowed) {
         return createSubscriptionErrorResponse(reply, slidesCheck.reason!);
@@ -343,12 +344,12 @@ export default fp(async (fastify: FastifyInstance) => {
         const attachmentsCheck = await canPerformAction(
           userId,
           "maxAttachmentsPerGeneration",
-          attachments.length
+          attachments.length,
         );
         if (!attachmentsCheck.allowed) {
           return createSubscriptionErrorResponse(
             reply,
-            attachmentsCheck.reason!
+            attachmentsCheck.reason!,
           );
         }
       }
@@ -426,8 +427,7 @@ export default fp(async (fastify: FastifyInstance) => {
         console.error("Error in stream processing:", error);
         const errorResponse = JSON.stringify({
           error: "Stream processing error",
-          message:
-            error instanceof Error ? error.message : "errorGenerating",
+          message: error instanceof Error ? error.message : "errorGenerating",
         });
         reply.raw.write(errorResponse);
         reply.raw.end();
@@ -444,12 +444,10 @@ export default fp(async (fastify: FastifyInstance) => {
           },
           status: "error",
           errorMessage:
-            error instanceof Error
-              ? error.message
-              : "Stream processing error",
+            error instanceof Error ? error.message : "Stream processing error",
         });
       }
-    }
+    },
   );
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -474,7 +472,7 @@ export default fp(async (fastify: FastifyInstance) => {
       }
 
       const templateContent = SLIDE_TEMPLATES.find(
-        (temp) => temp.name === (template as unknown as SlidesTemplates)
+        (temp) => temp.name === (template as unknown as SlidesTemplates),
       );
 
       if (!templateContent) {
@@ -547,7 +545,7 @@ export default fp(async (fastify: FastifyInstance) => {
 
         return reply.code(500).send("Error: " + error);
       }
-    }
+    },
   );
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -610,14 +608,12 @@ export default fp(async (fastify: FastifyInstance) => {
           },
           status: "error",
           errorMessage:
-            error instanceof Error
-              ? error.message
-              : "Content generation error",
+            error instanceof Error ? error.message : "Content generation error",
         });
 
         return reply.code(500).send("Error: " + error);
       }
-    }
+    },
   );
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -639,7 +635,7 @@ export default fp(async (fastify: FastifyInstance) => {
       // Check image generation access
       const imageCheck = await canPerformAction(
         userId,
-        "canUseImageGeneration"
+        "canUseImageGeneration",
       );
       if (!imageCheck.allowed) {
         return createSubscriptionErrorResponse(reply, imageCheck.reason!);
@@ -653,7 +649,7 @@ export default fp(async (fastify: FastifyInstance) => {
         if (!subscription?.canUseAdvancedImageModels) {
           return createSubscriptionErrorResponse(
             reply,
-            "Advanced image models are only available on Pro plan"
+            "Advanced image models are only available on Pro plan",
           );
         }
       }
@@ -691,7 +687,7 @@ export default fp(async (fastify: FastifyInstance) => {
         // Upload to S3
         const filename = `generated/${Date.now()}.${extension}`;
         const params = {
-          Bucket: process.env.NEXT_PUBLIC_AWS_BUCKET_NAME!,
+          Bucket: process.env.AWS_BUCKET_NAME!,
           Key: filename,
           Body: Buffer.from(imageBuffer),
           ContentType: contentType,
@@ -700,7 +696,7 @@ export default fp(async (fastify: FastifyInstance) => {
         const command = new PutObjectCommand(params);
         await s3Client.send(command);
 
-        const imageUrl = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}/${filename}`;
+        const imageUrl = `${process.env.AWS_ENDPOINT}/${process.env.AWS_BUCKET_NAME}/${filename}`;
 
         logUserAction({
           userId,
@@ -739,7 +735,7 @@ export default fp(async (fastify: FastifyInstance) => {
 
         return reply.code(500).send({ message: errorMessage });
       }
-    }
+    },
   );
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -783,7 +779,7 @@ export default fp(async (fastify: FastifyInstance) => {
       } catch (error) {
         return reply.code(500).send("Error: " + error);
       }
-    }
+    },
   );
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -805,7 +801,7 @@ export default fp(async (fastify: FastifyInstance) => {
       // Check chart generation access
       const chartCheck = await canPerformAction(
         userId,
-        "canUseChartGeneration"
+        "canUseChartGeneration",
       );
       if (!chartCheck.allowed) {
         return createSubscriptionErrorResponse(reply, chartCheck.reason!);
@@ -882,14 +878,12 @@ export default fp(async (fastify: FastifyInstance) => {
           },
           status: "error",
           errorMessage:
-            error instanceof Error
-              ? error.message
-              : "Chart generation error",
+            error instanceof Error ? error.message : "Chart generation error",
         });
 
         throw error;
       }
-    }
+    },
   );
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -899,8 +893,9 @@ export default fp(async (fastify: FastifyInstance) => {
     "/api/generate/selected-text",
     { preHandler: [authHook] },
     async (req: FastifyRequest, reply: FastifyReply) => {
-      const { selectedText, userPrompt, actionId } =
-        selectedTextSchema.parse(req.body);
+      const { selectedText, userPrompt, actionId } = selectedTextSchema.parse(
+        req.body,
+      );
       const userId = req.userId;
 
       if (!selectedText) {
@@ -980,7 +975,7 @@ export default fp(async (fastify: FastifyInstance) => {
 
         return reply.code(500).send("Error: " + error);
       }
-    }
+    },
   );
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -1019,7 +1014,7 @@ export default fp(async (fastify: FastifyInstance) => {
       function getRandomShuffleTemplate() {
         const totalWeight = SHUFFLE_TEMPLATES.reduce(
           (sum, { weight }) => sum + weight,
-          0
+          0,
         );
         let random = Math.random() * totalWeight;
         for (const { template: t, weight } of SHUFFLE_TEMPLATES) {
@@ -1075,6 +1070,6 @@ export default fp(async (fastify: FastifyInstance) => {
       } catch (error) {
         return reply.code(500).send("Error: " + error);
       }
-    }
+    },
   );
 });
