@@ -6,6 +6,7 @@ import {
 import { db } from "@/db";
 import { subscriptions } from "@/db/schema/subscriptions-schema";
 import { eq, and, gte, lte } from "drizzle-orm";
+import { env } from "@/config/env";
 
 declare module "fastify" {
   interface FastifyRequest {
@@ -21,6 +22,11 @@ export async function subscriptionHook(
 
   if (!userId) {
     reply.code(401).send({ error: "Unauthorized" });
+    return;
+  }
+
+  if (!env.SUBSCRIPTION_ENABLED) {
+    request.subscription = getSubscriptionLimits("pro");
     return;
   }
 

@@ -55,6 +55,9 @@ const envSchema = z.object({
   // Pricing
   PLUS_PRICE: z.coerce.number().optional(),
   PRO_PRICE: z.coerce.number().optional(),
+
+  // Subscription
+  SUBSCRIPTION_ENABLED: z.coerce.boolean().default(true),
 });
 
 export type Env = z.infer<typeof envSchema>;

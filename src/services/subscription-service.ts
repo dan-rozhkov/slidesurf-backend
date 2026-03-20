@@ -7,6 +7,7 @@ import {
   type SubscriptionLimits,
 } from "@/subscription-limits";
 import { isAdvancedModel } from "@/models";
+import { env } from "@/config/env";
 
 export type ActiveSubscription = {
   planType: string;
@@ -113,6 +114,10 @@ export async function canPerformAction(
   value?: number,
   modelId?: string
 ): Promise<{ allowed: boolean; reason?: string }> {
+  if (!env.SUBSCRIPTION_ENABLED) {
+    return { allowed: true };
+  }
+
   const subscriptionResult = await checkActiveSubscription(userId);
 
   if (!subscriptionResult.success || !subscriptionResult.subscription) {
@@ -211,6 +216,10 @@ export async function canPerformAction(
 export async function getSubscriptionLimitsForUser(
   userId: string
 ): Promise<SubscriptionLimits> {
+  if (!env.SUBSCRIPTION_ENABLED) {
+    return getSubscriptionLimits("pro");
+  }
+
   const result = await checkActiveSubscription(userId);
   return result.subscription?.limits || getSubscriptionLimits("free");
 }
@@ -219,6 +228,10 @@ export async function canUseModel(
   userId: string,
   modelId: string
 ): Promise<{ allowed: boolean; reason?: string }> {
+  if (!env.SUBSCRIPTION_ENABLED) {
+    return { allowed: true };
+  }
+
   const subscriptionResult = await checkActiveSubscription(userId);
 
   if (!subscriptionResult.success || !subscriptionResult.subscription) {
