@@ -8,6 +8,7 @@ import authPlugin from "./plugins/auth";
 import errorHandlerPlugin from "./plugins/error-handler";
 
 // Routes
+import modelsRoutes from "./routes/models";
 import themesRoutes from "./routes/themes";
 import themeAssetsRoutes from "./routes/themes/assets";
 import plansRoutes from "./routes/plans";
@@ -51,6 +52,7 @@ export async function buildApp() {
   await app.register(errorHandlerPlugin);
 
   // Register route plugins
+  await app.register(modelsRoutes);
   await app.register(themesRoutes);
   await app.register(themeAssetsRoutes);
   await app.register(plansRoutes);

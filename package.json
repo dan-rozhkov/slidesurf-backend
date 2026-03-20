@@ -8,7 +8,8 @@
     "build": "vite build",
     "start": "node dist/index.js",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate"
+    "db:migrate": "drizzle-kit migrate",
+    "db:seed:models": "vite-node src/db/seed-ai-models.ts"
   },
   "dependencies": {
     "@ai-sdk/openai": "^2.0.0",

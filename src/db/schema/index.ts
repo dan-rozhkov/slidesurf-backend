@@ -1,5 +1,6 @@
 // Export all schema tables
 export * from "./auth-schema";
+export * from "./ai-models-schema";
 export * from "./themes-schema";
 export * from "./presentations-schema";
 export * from "./subscriptions-schema";

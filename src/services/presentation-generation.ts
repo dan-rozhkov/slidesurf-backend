@@ -2,7 +2,7 @@ import { Presentation, Section, Slide } from "@/types";
 import { generatePlan } from "./plan-generation";
 import { generateSlides } from "./slides-generation";
 import { nanoid } from "@/utils/nanoid";
-import { DEFAULT_MODEL } from "@/models";
+import { getDefaultModel } from "@/models";
 import {
   FullPresentationGenerationParams,
   PlanGenerationParams,
@@ -34,7 +34,7 @@ export async function generateFullPresentation(
     title,
     slidesCount,
     lang,
-    model: model || DEFAULT_MODEL,
+    model: model || (await getDefaultModel()),
     attachments,
   };
 

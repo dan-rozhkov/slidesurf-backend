@@ -37,7 +37,7 @@ import {
 import { SlideAction, SlidesTemplates } from "@/types";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { fal } from "@fal-ai/client";
-import { DEFAULT_IMAGE_MODEL, getModelById } from "@/models";
+import { getDefaultImageModel, getModelById } from "@/models";
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -651,10 +651,10 @@ export default fp(async (fastify: FastifyInstance) => {
         return createSubscriptionErrorResponse(reply, imageCheck.reason!);
       }
 
-      const selectedModel = model || DEFAULT_IMAGE_MODEL;
+      const selectedModel = model || (await getDefaultImageModel());
 
       // Check if user can use advanced image models
-      const modelInfo = getModelById(selectedModel);
+      const modelInfo = await getModelById(selectedModel);
       if (modelInfo?.advanced) {
         if (!subscription?.canUseAdvancedImageModels) {
           return createSubscriptionErrorResponse(

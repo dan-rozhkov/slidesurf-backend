@@ -152,7 +152,7 @@ export async function canPerformAction(
           reason: "Advanced models not available in your plan",
         };
       }
-      if (modelId && isAdvancedModel(modelId) && !limits.canUseAdvancedModels) {
+      if (modelId && (await isAdvancedModel(modelId)) && !limits.canUseAdvancedModels) {
         return {
           allowed: false,
           reason: "This advanced model is not available in your plan",
@@ -240,7 +240,7 @@ export async function canUseModel(
 
   const { limits } = subscriptionResult.subscription;
 
-  if (isAdvancedModel(modelId) && !limits.canUseAdvancedModels) {
+  if ((await isAdvancedModel(modelId)) && !limits.canUseAdvancedModels) {
     return {
       allowed: false,
       reason: "This advanced model is not available in your plan",
