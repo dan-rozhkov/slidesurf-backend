@@ -126,6 +126,12 @@ export default fp(async (fastify: FastifyInstance) => {
           headers[key] = value;
         });
 
+        const origin = req.headers.origin;
+        if (origin) {
+          headers["Access-Control-Allow-Origin"] = origin;
+          headers["Access-Control-Allow-Credentials"] = "true";
+        }
+
         reply.raw.writeHead(response.status, headers);
 
         if (response.body) {

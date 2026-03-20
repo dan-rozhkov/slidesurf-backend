@@ -10,6 +10,7 @@ function resolveModelId(preferredModel?: string): AiModelId {
 const provider = createOpenAI({
   apiKey: process.env.OPENROUTER_API_KEY,
   baseURL: process.env.OPENROUTER_BASE_URL || "https://openrouter.ai/api/v1",
+  compatibility: "compatible",
   headers: {
     ...(process.env.OPENROUTER_REFERER && {
       "HTTP-Referer": process.env.OPENROUTER_REFERER,

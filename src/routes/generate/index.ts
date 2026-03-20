@@ -256,11 +256,16 @@ export default fp(async (fastify: FastifyInstance) => {
       });
 
       // Stream the async iterable to the client
+      const origin = req.headers.origin;
       reply.hijack();
       reply.raw.writeHead(200, {
         "Content-Type": "text/event-stream",
         "Cache-Control": "no-cache",
         Connection: "keep-alive",
+        ...(origin && {
+          "Access-Control-Allow-Origin": origin,
+          "Access-Control-Allow-Credentials": "true",
+        }),
         "X-Subscription-Plan": subscription?.planType || "free",
         "X-Subscription-Limits": JSON.stringify(subscription || {}),
       });
@@ -375,11 +380,16 @@ export default fp(async (fastify: FastifyInstance) => {
       const planId = crypto.randomUUID();
 
       // Stream the async iterable to the client
+      const origin = req.headers.origin;
       reply.hijack();
       reply.raw.writeHead(200, {
         "Content-Type": "text/event-stream",
         "Cache-Control": "no-cache",
         Connection: "keep-alive",
+        ...(origin && {
+          "Access-Control-Allow-Origin": origin,
+          "Access-Control-Allow-Credentials": "true",
+        }),
         "X-Subscription-Plan": subscription?.planType || "free",
         "X-Subscription-Limits": JSON.stringify(subscription || {}),
         "X-Plan-Id": planId,
