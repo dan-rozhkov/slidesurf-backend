@@ -1,0 +1,1 @@
+ALTER TABLE "themes" ADD COLUMN "font_weights" jsonb;

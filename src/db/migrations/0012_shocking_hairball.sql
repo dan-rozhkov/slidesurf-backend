@@ -1,0 +1,1 @@
+ALTER TABLE "presentations" ADD COLUMN "plan_id" text;
