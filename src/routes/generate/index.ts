@@ -265,6 +265,8 @@ export default fp(async (fastify: FastifyInstance) => {
         ...(origin && {
           "Access-Control-Allow-Origin": origin,
           "Access-Control-Allow-Credentials": "true",
+          "Access-Control-Expose-Headers":
+            "X-Subscription-Plan, X-Subscription-Limits",
         }),
         "X-Subscription-Plan": subscription?.planType || "free",
         "X-Subscription-Limits": JSON.stringify(subscription || {}),
@@ -389,6 +391,8 @@ export default fp(async (fastify: FastifyInstance) => {
         ...(origin && {
           "Access-Control-Allow-Origin": origin,
           "Access-Control-Allow-Credentials": "true",
+          "Access-Control-Expose-Headers":
+            "X-Plan-Id, X-Subscription-Plan, X-Subscription-Limits",
         }),
         "X-Subscription-Plan": subscription?.planType || "free",
         "X-Subscription-Limits": JSON.stringify(subscription || {}),
