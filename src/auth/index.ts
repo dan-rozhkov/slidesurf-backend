@@ -97,7 +97,7 @@ export const auth = betterAuth({
               }
             );
 
-            const data = await userInfo.json();
+            const data: any = await userInfo.json();
 
             return {
               id: data.id,

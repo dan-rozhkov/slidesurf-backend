@@ -25,7 +25,7 @@ const provider = createOpenRouter({
 });
 
 function resolveModelId(preferredModel?: string): string {
-  return preferredModel || "qwen/qwen3-235b-a22b-2507";
+  return preferredModel || process.env.OPENROUTER_MODEL_STRONG || "qwen/qwen3-235b-a22b-2507";
 }
 
 const MAX_MESSAGES_TO_MODEL = 10;
@@ -95,7 +95,7 @@ export default fp(async (fastify: FastifyInstance) => {
 
         const result = streamText({
           model: provider(selectedModel),
-          messages: convertToModelMessages(limitedMessages),
+          messages: await convertToModelMessages(limitedMessages),
           system: systemPrompt,
           tools,
           stopWhen: stepCountIs(5),

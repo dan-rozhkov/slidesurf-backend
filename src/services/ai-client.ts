@@ -1,5 +1,9 @@
-import { generateText, streamText, type ModelMessage } from "ai";
-import { createOpenAI } from "@ai-sdk/openai";
+import {
+  generateText,
+  streamText,
+  type ModelMessage,
+} from "ai";
+import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 
 export type AiModelId = string;
 
@@ -7,10 +11,10 @@ function resolveModelId(preferredModel?: string): AiModelId {
   return preferredModel || process.env.OPENROUTER_MODEL || "openai/gpt-4o-mini";
 }
 
-const provider = createOpenAI({
+const provider = createOpenAICompatible({
+  name: "openrouter",
   apiKey: process.env.OPENROUTER_API_KEY,
   baseURL: process.env.OPENROUTER_BASE_URL || "https://openrouter.ai/api/v1",
-  compatibility: "compatible",
   headers: {
     ...(process.env.OPENROUTER_REFERER && {
       "HTTP-Referer": process.env.OPENROUTER_REFERER,
@@ -21,13 +25,14 @@ const provider = createOpenAI({
   },
 });
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export async function aiGenerateText(args: {
   system?: string;
   messages?: ModelMessage[];
   prompt?: string;
   model?: string;
   temperature?: number;
-}) {
+}): Promise<any> {
   const { system, messages, prompt, model, temperature } = args;
 
   if (messages) {
@@ -51,13 +56,14 @@ export async function aiGenerateText(args: {
   throw new Error("Either 'messages' or 'prompt' must be provided");
 }
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export async function aiStreamText(args: {
   system?: string;
   messages?: ModelMessage[];
   prompt?: string;
   model?: string;
   temperature?: number;
-}) {
+}): Promise<any> {
   const { system, messages, prompt, model, temperature } = args;
 
   if (messages) {

@@ -77,13 +77,10 @@ async function teamsRoutes(fastify: FastifyInstance) {
   );
 
   // GET /api/teams/:id - Get team by ID
-  fastify.get(
+  fastify.get<{ Params: { id: string } }>(
     "/api/teams/:id",
     { onRequest: authHook },
-    async (
-      req: FastifyRequest<{ Params: { id: string } }>,
-      reply: FastifyReply
-    ) => {
+    async (req, reply) => {
       try {
         const { id } = req.params;
         const team = await getTeamById(id, req.userId);
@@ -101,13 +98,10 @@ async function teamsRoutes(fastify: FastifyInstance) {
   );
 
   // PUT /api/teams/:id - Update team
-  fastify.put(
+  fastify.put<{ Params: { id: string } }>(
     "/api/teams/:id",
     { onRequest: authHook },
-    async (
-      req: FastifyRequest<{ Params: { id: string } }>,
-      reply: FastifyReply
-    ) => {
+    async (req, reply) => {
       try {
         const { id } = req.params;
         const data = updateTeamSchema.parse(req.body);
@@ -130,13 +124,10 @@ async function teamsRoutes(fastify: FastifyInstance) {
   );
 
   // DELETE /api/teams/:id - Delete team
-  fastify.delete(
+  fastify.delete<{ Params: { id: string } }>(
     "/api/teams/:id",
     { onRequest: authHook },
-    async (
-      req: FastifyRequest<{ Params: { id: string } }>,
-      reply: FastifyReply
-    ) => {
+    async (req, reply) => {
       try {
         const { id } = req.params;
         await deleteTeam(id, req.userId);
@@ -154,13 +145,10 @@ async function teamsRoutes(fastify: FastifyInstance) {
   );
 
   // GET /api/teams/:id/members - Get team members
-  fastify.get(
+  fastify.get<{ Params: { id: string } }>(
     "/api/teams/:id/members",
     { onRequest: authHook },
-    async (
-      req: FastifyRequest<{ Params: { id: string } }>,
-      reply: FastifyReply
-    ) => {
+    async (req, reply) => {
       try {
         const { id } = req.params;
         const members = await getTeamMembers(id, req.userId);
@@ -180,13 +168,10 @@ async function teamsRoutes(fastify: FastifyInstance) {
   );
 
   // POST /api/teams/:id/members - Invite a member
-  fastify.post(
+  fastify.post<{ Params: { id: string } }>(
     "/api/teams/:id/members",
     { onRequest: authHook },
-    async (
-      req: FastifyRequest<{ Params: { id: string } }>,
-      reply: FastifyReply
-    ) => {
+    async (req, reply) => {
       try {
         const { id } = req.params;
         const { email } = inviteMemberSchema.parse(req.body);
@@ -215,13 +200,10 @@ async function teamsRoutes(fastify: FastifyInstance) {
   );
 
   // DELETE /api/teams/:id/members - Remove a member
-  fastify.delete(
+  fastify.delete<{ Params: { id: string } }>(
     "/api/teams/:id/members",
     { onRequest: authHook },
-    async (
-      req: FastifyRequest<{ Params: { id: string } }>,
-      reply: FastifyReply
-    ) => {
+    async (req, reply) => {
       try {
         const { id } = req.params;
         const { userId } = removeMemberSchema.parse(req.body);
@@ -244,13 +226,10 @@ async function teamsRoutes(fastify: FastifyInstance) {
   );
 
   // GET /api/teams/:id/invitations - Get team invitations
-  fastify.get(
+  fastify.get<{ Params: { id: string } }>(
     "/api/teams/:id/invitations",
     { onRequest: authHook },
-    async (
-      req: FastifyRequest<{ Params: { id: string } }>,
-      reply: FastifyReply
-    ) => {
+    async (req, reply) => {
       try {
         const { id } = req.params;
         const invitations = await getTeamInvitations(id, req.userId);
@@ -270,13 +249,10 @@ async function teamsRoutes(fastify: FastifyInstance) {
   );
 
   // DELETE /api/teams/:id/invitations - Cancel an invitation
-  fastify.delete(
+  fastify.delete<{ Params: { id: string } }>(
     "/api/teams/:id/invitations",
     { onRequest: authHook },
-    async (
-      req: FastifyRequest<{ Params: { id: string } }>,
-      reply: FastifyReply
-    ) => {
+    async (req, reply) => {
       try {
         const { invitationId } = cancelInvitationSchema.parse(req.body);
         await cancelInvitation(invitationId, req.userId);
@@ -300,13 +276,10 @@ async function teamsRoutes(fastify: FastifyInstance) {
   );
 
   // POST /api/teams/:id/leave - Leave a team
-  fastify.post(
+  fastify.post<{ Params: { id: string } }>(
     "/api/teams/:id/leave",
     { onRequest: authHook },
-    async (
-      req: FastifyRequest<{ Params: { id: string } }>,
-      reply: FastifyReply
-    ) => {
+    async (req, reply) => {
       try {
         const { id } = req.params;
         await leaveTeam(id, req.userId);
@@ -324,13 +297,10 @@ async function teamsRoutes(fastify: FastifyInstance) {
   );
 
   // POST /api/teams/:id/transfer-ownership - Transfer team ownership
-  fastify.post(
+  fastify.post<{ Params: { id: string } }>(
     "/api/teams/:id/transfer-ownership",
     { onRequest: authHook },
-    async (
-      req: FastifyRequest<{ Params: { id: string } }>,
-      reply: FastifyReply
-    ) => {
+    async (req, reply) => {
       try {
         const { id } = req.params;
         const { newOwnerId } = transferOwnershipSchema.parse(req.body);
@@ -355,13 +325,10 @@ async function teamsRoutes(fastify: FastifyInstance) {
   );
 
   // GET /api/teams/:id/presentations - Get team shared presentations
-  fastify.get(
+  fastify.get<{ Params: { id: string } }>(
     "/api/teams/:id/presentations",
     { onRequest: authHook },
-    async (
-      req: FastifyRequest<{ Params: { id: string } }>,
-      reply: FastifyReply
-    ) => {
+    async (req, reply) => {
       try {
         const { id } = req.params;
         const presentations = await getTeamSharedPresentations(id, req.userId);
@@ -381,13 +348,10 @@ async function teamsRoutes(fastify: FastifyInstance) {
   );
 
   // POST /api/teams/:id/presentations - Share a presentation with team
-  fastify.post(
+  fastify.post<{ Params: { id: string } }>(
     "/api/teams/:id/presentations",
     { onRequest: authHook },
-    async (
-      req: FastifyRequest<{ Params: { id: string } }>,
-      reply: FastifyReply
-    ) => {
+    async (req, reply) => {
       try {
         const { id } = req.params;
         const { presentationId } = sharePresentationSchema.parse(req.body);
@@ -412,13 +376,10 @@ async function teamsRoutes(fastify: FastifyInstance) {
   );
 
   // DELETE /api/teams/:id/presentations - Unshare a presentation from team
-  fastify.delete(
+  fastify.delete<{ Params: { id: string } }>(
     "/api/teams/:id/presentations",
     { onRequest: authHook },
-    async (
-      req: FastifyRequest<{ Params: { id: string } }>,
-      reply: FastifyReply
-    ) => {
+    async (req, reply) => {
       try {
         const { id } = req.params;
         const { presentationId } = unsharePresentationSchema.parse(req.body);
@@ -443,12 +404,9 @@ async function teamsRoutes(fastify: FastifyInstance) {
   );
 
   // GET /api/teams/invitations/:token - Get invitation by token (no auth required)
-  fastify.get(
+  fastify.get<{ Params: { token: string } }>(
     "/api/teams/invitations/:token",
-    async (
-      req: FastifyRequest<{ Params: { token: string } }>,
-      reply: FastifyReply
-    ) => {
+    async (req, reply) => {
       try {
         const { token } = req.params;
         const invitation = await getInvitationByToken(token);
@@ -468,13 +426,10 @@ async function teamsRoutes(fastify: FastifyInstance) {
   );
 
   // POST /api/teams/invitations/:token - Accept an invitation
-  fastify.post(
+  fastify.post<{ Params: { token: string } }>(
     "/api/teams/invitations/:token",
     { onRequest: authHook },
-    async (
-      req: FastifyRequest<{ Params: { token: string } }>,
-      reply: FastifyReply
-    ) => {
+    async (req, reply) => {
       try {
         const { token } = req.params;
         const team = await acceptInvitation(

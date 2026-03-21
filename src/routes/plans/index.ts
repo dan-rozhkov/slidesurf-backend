@@ -22,10 +22,10 @@ const updatePlanSchema = z.object({
 
 export default fp(async (fastify: FastifyInstance) => {
   // GET /api/plans/:id - get plan research (auth required)
-  fastify.get(
+  fastify.get<{ Params: { id: string } }>(
     "/api/plans/:id",
     { preHandler: [authHook] },
-    async (req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
+    async (req, reply) => {
       try {
         const { id } = req.params;
 
@@ -60,10 +60,10 @@ export default fp(async (fastify: FastifyInstance) => {
   );
 
   // PATCH /api/plans/:id - update plan (auth required)
-  fastify.patch(
+  fastify.patch<{ Params: { id: string } }>(
     "/api/plans/:id",
     { preHandler: [authHook] },
-    async (req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
+    async (req, reply) => {
       try {
         const { id } = req.params;
         const { slides, slidesCount } = updatePlanSchema.parse(req.body);

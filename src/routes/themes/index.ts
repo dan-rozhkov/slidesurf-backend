@@ -55,9 +55,9 @@ export default fp(async (fastify: FastifyInstance) => {
   );
 
   // GET /api/themes/:id - get theme by id (optional auth)
-  fastify.get(
+  fastify.get<{ Params: { id: string } }>(
     "/api/themes/:id",
-    async (req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
+    async (req, reply) => {
       try {
         const session = await auth.api.getSession({
           headers: req.headers as Record<string, string>,
@@ -81,10 +81,10 @@ export default fp(async (fastify: FastifyInstance) => {
   );
 
   // PUT /api/themes/:id - update theme (auth required)
-  fastify.put(
+  fastify.put<{ Params: { id: string } }>(
     "/api/themes/:id",
     { preHandler: [authHook] },
-    async (req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
+    async (req, reply) => {
       try {
         const { id } = req.params;
         const themeData = req.body as any;
@@ -103,10 +103,10 @@ export default fp(async (fastify: FastifyInstance) => {
   );
 
   // DELETE /api/themes/:id - delete theme (auth required)
-  fastify.delete(
+  fastify.delete<{ Params: { id: string } }>(
     "/api/themes/:id",
     { preHandler: [authHook] },
-    async (req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
+    async (req, reply) => {
       try {
         const { id } = req.params;
         const deleted = await ThemesService.deleteTheme(id, req.userId);
@@ -124,10 +124,10 @@ export default fp(async (fastify: FastifyInstance) => {
   );
 
   // PUT /api/themes/:id/visibility - set theme visibility (auth required)
-  fastify.put(
+  fastify.put<{ Params: { id: string } }>(
     "/api/themes/:id/visibility",
     { preHandler: [authHook] },
-    async (req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
+    async (req, reply) => {
       try {
         const { isPublic } = req.body as { isPublic: boolean };
 

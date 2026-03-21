@@ -71,13 +71,10 @@ function makeOAuthRequest<T = unknown>(url: string): Promise<T> {
 
 export default fp(async (fastify: FastifyInstance) => {
   // POST /api/search/unsplash
-  fastify.post(
+  fastify.post<{ Body: z.infer<typeof querySchema> }>(
     "/api/search/unsplash",
     { preHandler: authHook },
-    async (
-      req: FastifyRequest<{ Body: z.infer<typeof querySchema> }>,
-      reply: FastifyReply
-    ) => {
+    async (req, reply) => {
       const { query } = querySchema.parse(req.body);
 
       if (!query) {
@@ -114,13 +111,10 @@ export default fp(async (fastify: FastifyInstance) => {
   );
 
   // POST /api/search/yandex
-  fastify.post(
+  fastify.post<{ Body: z.infer<typeof querySchema> }>(
     "/api/search/yandex",
     { preHandler: authHook },
-    async (
-      req: FastifyRequest<{ Body: z.infer<typeof querySchema> }>,
-      reply: FastifyReply
-    ) => {
+    async (req, reply) => {
       const { query } = querySchema.parse(req.body);
 
       try {
@@ -154,13 +148,10 @@ export default fp(async (fastify: FastifyInstance) => {
   );
 
   // POST /api/search/yandex-gensearch
-  fastify.post(
+  fastify.post<{ Body: z.infer<typeof yandexGensearchSchema> }>(
     "/api/search/yandex-gensearch",
     { preHandler: authHook },
-    async (
-      req: FastifyRequest<{ Body: z.infer<typeof yandexGensearchSchema> }>,
-      reply: FastifyReply
-    ) => {
+    async (req, reply) => {
       const { query, urls } = yandexGensearchSchema.parse(req.body);
 
       try {
@@ -197,13 +188,10 @@ export default fp(async (fastify: FastifyInstance) => {
   );
 
   // POST /api/search/freepik
-  fastify.post(
+  fastify.post<{ Body: z.infer<typeof querySchema> }>(
     "/api/search/freepik",
     { preHandler: authHook },
-    async (
-      req: FastifyRequest<{ Body: z.infer<typeof querySchema> }>,
-      reply: FastifyReply
-    ) => {
+    async (req, reply) => {
       const { query } = querySchema.parse(req.body);
 
       if (!query) {
@@ -251,13 +239,10 @@ export default fp(async (fastify: FastifyInstance) => {
   );
 
   // POST /api/search/nounproject
-  fastify.post(
+  fastify.post<{ Body: z.infer<typeof querySchema> }>(
     "/api/search/nounproject",
     { preHandler: authHook },
-    async (
-      req: FastifyRequest<{ Body: z.infer<typeof querySchema> }>,
-      reply: FastifyReply
-    ) => {
+    async (req, reply) => {
       const { query } = querySchema.parse(req.body);
 
       if (!query) {
@@ -295,15 +280,10 @@ export default fp(async (fastify: FastifyInstance) => {
   );
 
   // POST /api/search/nounproject/download
-  fastify.post(
+  fastify.post<{ Body: z.infer<typeof nounProjectDownloadSchema> }>(
     "/api/search/nounproject/download",
     { preHandler: authHook },
-    async (
-      req: FastifyRequest<{
-        Body: z.infer<typeof nounProjectDownloadSchema>;
-      }>,
-      reply: FastifyReply
-    ) => {
+    async (req, reply) => {
       const { iconId, color, filetype, size } =
         nounProjectDownloadSchema.parse(req.body);
 

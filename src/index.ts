@@ -1,28 +1,42 @@
+import http from "node:http";
 import { buildApp } from "./app";
 
-const start = async () => {
-  const app = await buildApp();
+const port = Number(process.env.PORT) || 3001;
+const host = "0.0.0.0";
 
-  const port = Number(process.env.PORT) || 3001;
-  const host = "0.0.0.0";
+let app = await buildApp();
+await app.ready();
 
-  try {
-    await app.listen({ port, host });
-    app.log.info(`Server listening on ${host}:${port}`);
-  } catch (err) {
-    app.log.error(err);
-    process.exit(1);
-  }
+const server = http.createServer((req, res) => {
+  app.server.emit("request", req, res);
+});
 
-  // Graceful shutdown
-  const shutdown = async () => {
-    app.log.info("Shutting down...");
-    await app.close();
-    process.exit(0);
-  };
+server.listen(port, host, () => {
+  console.log(`Server listening on ${host}:${port}`);
+});
 
-  process.on("SIGINT", shutdown);
-  process.on("SIGTERM", shutdown);
+// Graceful shutdown
+const shutdown = () => {
+  console.log("Shutting down...");
+  server.close();
+  app.close();
+  process.exit(0);
 };
 
-start();
+process.on("SIGINT", shutdown);
+process.on("SIGTERM", shutdown);
+
+// Hot Module Replacement — swap Fastify app without restarting the server
+if (import.meta.hot) {
+  import.meta.hot.accept("./app", async (mod) => {
+    try {
+      const oldApp = app;
+      app = await mod!.buildApp();
+      await app.ready();
+      await oldApp.close();
+      console.log("HMR: app reloaded");
+    } catch (err) {
+      console.error("HMR: reload failed", err);
+    }
+  });
+}

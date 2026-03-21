@@ -119,13 +119,10 @@ async function subscriptionRoutes(fastify: FastifyInstance) {
   );
 
   // POST /api/subscription/process — create a payment (authenticated)
-  fastify.post(
+  fastify.post<{ Body: z.infer<typeof subscriptionSchema> }>(
     "/api/subscription/process",
     { onRequest: [authHook] },
-    async (
-      req: FastifyRequest<{ Body: z.infer<typeof subscriptionSchema> }>,
-      reply: FastifyReply
-    ) => {
+    async (req, reply) => {
       const t = getI18nFromHeader(req.headers["accept-language"] as string);
 
       try {
@@ -136,7 +133,7 @@ async function subscriptionRoutes(fastify: FastifyInstance) {
         if (planPrice === undefined) {
           return reply
             .code(500)
-            .send({ error: t["subscription.errors.configNotFound"] });
+            .send({ error: t.subscription.errors.configNotFound });
         }
 
         let discountAmount = 0;
@@ -160,7 +157,7 @@ async function subscriptionRoutes(fastify: FastifyInstance) {
           ) {
             return reply
               .code(400)
-              .send({ error: t["promoCode.errors.invalidOrExpired"] });
+              .send({ error: t.promoCode.errors.invalidOrExpired });
           }
 
           planPrice = promoCode.finalPrice;
@@ -168,9 +165,9 @@ async function subscriptionRoutes(fastify: FastifyInstance) {
           originalPrice = promoCode.originalPrice;
         }
 
-        const planName = t[`subscription.plans.${planType}` as keyof typeof t] as string;
-        const paymentDescription = t["subscription.payment.description"] as string;
-        const forMonth = t["subscription.payment.forMonth"] as string;
+        const planName = t.subscription.plans[planType];
+        const paymentDescription = t.subscription.payment.description;
+        const forMonth = t.subscription.payment.forMonth;
 
         const referer =
           (req.headers["referer"] as string) || env.BETTER_AUTH_URL;
@@ -197,7 +194,7 @@ async function subscriptionRoutes(fastify: FastifyInstance) {
         if (!shopId || !secretKey) {
           return reply
             .code(500)
-            .send({ error: t["subscription.errors.configNotFound"] });
+            .send({ error: t.subscription.errors.configNotFound });
         }
 
         const credentials = Buffer.from(`${shopId}:${secretKey}`).toString(
@@ -231,7 +228,7 @@ async function subscriptionRoutes(fastify: FastifyInstance) {
           return reply.code(response.status).send({
             error:
               errorData.description ||
-              t["subscription.errors.paymentFailed"],
+              t.subscription.errors.paymentFailed,
           });
         }
 
@@ -242,14 +239,14 @@ async function subscriptionRoutes(fastify: FastifyInstance) {
 
         if (error instanceof z.ZodError) {
           return reply.code(400).send({
-            error: t["subscription.errors.invalidData"],
+            error: t.subscription.errors.invalidData,
             details: error.errors,
           });
         }
 
         return reply
           .code(500)
-          .send({ error: t["subscription.errors.serverError"] });
+          .send({ error: t.subscription.errors.serverError });
       }
     }
   );

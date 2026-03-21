@@ -86,13 +86,10 @@ async function presentationRoutes(fastify: FastifyInstance) {
   );
 
   // GET /api/presentations/:id — get presentation by ID
-  fastify.get(
+  fastify.get<{ Params: { id: string } }>(
     "/api/presentations/:id",
     { onRequest: [authHook] },
-    async (
-      req: FastifyRequest<{ Params: { id: string } }>,
-      reply: FastifyReply
-    ) => {
+    async (req, reply) => {
       try {
         const presentation = await getPresentationById(
           req.params.id,
@@ -112,13 +109,10 @@ async function presentationRoutes(fastify: FastifyInstance) {
   );
 
   // PUT /api/presentations/:id — update presentation
-  fastify.put(
+  fastify.put<{ Params: { id: string } }>(
     "/api/presentations/:id",
     { onRequest: [authHook] },
-    async (
-      req: FastifyRequest<{ Params: { id: string } }>,
-      reply: FastifyReply
-    ) => {
+    async (req, reply) => {
       try {
         const updated = await updatePresentation(
           req.params.id,
@@ -156,13 +150,10 @@ async function presentationRoutes(fastify: FastifyInstance) {
   );
 
   // POST /api/presentations/:id/trash — move presentation to trash
-  fastify.post(
+  fastify.post<{ Params: { id: string } }>(
     "/api/presentations/:id/trash",
     { onRequest: [authHook] },
-    async (
-      req: FastifyRequest<{ Params: { id: string } }>,
-      reply: FastifyReply
-    ) => {
+    async (req, reply) => {
       try {
         await toTrash(req.params.id, req.userId);
         return reply.send({ success: true });
@@ -176,13 +167,10 @@ async function presentationRoutes(fastify: FastifyInstance) {
   );
 
   // POST /api/presentations/:id/restore — restore presentation from trash
-  fastify.post(
+  fastify.post<{ Params: { id: string } }>(
     "/api/presentations/:id/restore",
     { onRequest: [authHook] },
-    async (
-      req: FastifyRequest<{ Params: { id: string } }>,
-      reply: FastifyReply
-    ) => {
+    async (req, reply) => {
       try {
         await restorePresentation(req.params.id, req.userId);
         return reply.send({ success: true });
@@ -196,13 +184,10 @@ async function presentationRoutes(fastify: FastifyInstance) {
   );
 
   // DELETE /api/presentations/:id — permanently delete presentation
-  fastify.delete(
+  fastify.delete<{ Params: { id: string } }>(
     "/api/presentations/:id",
     { onRequest: [authHook] },
-    async (
-      req: FastifyRequest<{ Params: { id: string } }>,
-      reply: FastifyReply
-    ) => {
+    async (req, reply) => {
       try {
         await deletePresentation(req.params.id, req.userId);
         return reply.send({ success: true });
@@ -216,13 +201,10 @@ async function presentationRoutes(fastify: FastifyInstance) {
   );
 
   // GET /api/presentations/:id/teams — get teams a presentation is shared with (authenticated)
-  fastify.get(
+  fastify.get<{ Params: { id: string } }>(
     "/api/presentations/:id/teams",
     { onRequest: [authHook] },
-    async (
-      req: FastifyRequest<{ Params: { id: string } }>,
-      reply: FastifyReply
-    ) => {
+    async (req, reply) => {
       try {
         const { id } = req.params;
         const teams = await getPresentationTeams(id, req.userId);
