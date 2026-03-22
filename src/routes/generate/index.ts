@@ -262,7 +262,7 @@ export default fp(async (fastify: FastifyInstance) => {
         "Content-Type": "text/event-stream",
         "Cache-Control": "no-cache",
         Connection: "keep-alive",
-        ...(origin && {
+        ...(origin && origin === process.env.FRONTEND_URL && {
           "Access-Control-Allow-Origin": origin,
           "Access-Control-Allow-Credentials": "true",
           "Access-Control-Expose-Headers":
@@ -388,7 +388,7 @@ export default fp(async (fastify: FastifyInstance) => {
         "Content-Type": "text/event-stream",
         "Cache-Control": "no-cache",
         Connection: "keep-alive",
-        ...(origin && {
+        ...(origin && origin === process.env.FRONTEND_URL && {
           "Access-Control-Allow-Origin": origin,
           "Access-Control-Allow-Credentials": "true",
           "Access-Control-Expose-Headers":

@@ -127,7 +127,7 @@ export default fp(async (fastify: FastifyInstance) => {
         });
 
         const origin = req.headers.origin;
-        if (origin) {
+        if (origin && origin === process.env.FRONTEND_URL) {
           headers["Access-Control-Allow-Origin"] = origin;
           headers["Access-Control-Allow-Credentials"] = "true";
         }

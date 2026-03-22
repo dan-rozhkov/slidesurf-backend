@@ -79,8 +79,8 @@ export const auth = betterAuth({
       config: [
         {
           providerId: "yandex",
-          clientId: "050a932f9210469e9d06e6cd4fcecc9f",
-          clientSecret: "8e602597d3f94be6a14079adeb490169",
+          clientId: process.env.YANDEX_CLIENT_ID as string,
+          clientSecret: process.env.YANDEX_CLIENT_SECRET as string,
           authorizationUrl: "https://oauth.yandex.ru/authorize",
           tokenUrl: "https://oauth.yandex.ru/token",
           userInfoUrl: "https://login.yandex.ru/info?format=json",

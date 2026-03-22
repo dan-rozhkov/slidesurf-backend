@@ -16,6 +16,10 @@ const envSchema = z.object({
   GOOGLE_CLIENT_ID: z.string(),
   GOOGLE_CLIENT_SECRET: z.string(),
 
+  // Yandex OAuth
+  YANDEX_CLIENT_ID: z.string(),
+  YANDEX_CLIENT_SECRET: z.string(),
+
   // OpenRouter
   OPENROUTER_API_KEY: z.string(),
   OPENROUTER_BASE_URL: z
