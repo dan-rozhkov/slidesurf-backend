@@ -405,9 +405,9 @@ export default fp(async (fastify: FastifyInstance) => {
           fullContent += chunk;
           reply.raw.write(chunk);
         }
-        reply.raw.end();
 
-        // Save to DB
+        // Save to DB before ending stream so the plan is available
+        // when the frontend fetches research via GET /api/plans/:id
         try {
           const sections = parseSectionsFromResponse(fullContent);
           await db.insert(presentationPlans).values({
@@ -424,6 +424,8 @@ export default fp(async (fastify: FastifyInstance) => {
         } catch (dbError) {
           console.error("Error saving plan to DB:", dbError);
         }
+
+        reply.raw.end();
 
         logUserAction({
           userId,

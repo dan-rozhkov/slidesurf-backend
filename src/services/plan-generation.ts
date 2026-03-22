@@ -27,7 +27,10 @@ export async function generatePlan(
   let researchSummary = "";
   if (useResearch) {
     const researchResult = await runWebResearch({ title, lang });
-    researchText = researchResult.raw;
+    researchText = JSON.stringify({
+      summary: researchResult.summary,
+      sources: researchResult.sources,
+    });
     researchSummary = researchResult.summary;
   }
 
@@ -90,7 +93,10 @@ export async function generatePlanStream(params: PlanGenerationParams) {
   let researchSummary = "";
   if (useResearch) {
     const researchResult = await runWebResearch({ title, lang });
-    researchText = researchResult.raw;
+    researchText = JSON.stringify({
+      summary: researchResult.summary,
+      sources: researchResult.sources,
+    });
     researchSummary = researchResult.summary;
   }
 
