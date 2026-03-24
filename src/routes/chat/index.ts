@@ -84,6 +84,8 @@ export default fp(async (fastify: FastifyInstance) => {
           RULES:
           - Do not show slideId and presentationId in the response.
           - Do not return generated slide content to the chat history.
+          - IMPORTANT: Before updating or replacing slide content, ALWAYS first read the current slide content using the getSlideContent tool. Never update a slide without reading it first.
+          - When editing or replacing slide content, preserve the existing HTML structure and layout of the slide. Only change the text, data, or specific elements the user asked to modify. Do not regenerate the entire slide from scratch.
           - At the end of the response, always suggest improvements for the slide.
 
           <additional_data>
