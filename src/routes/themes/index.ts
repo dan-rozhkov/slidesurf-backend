@@ -56,9 +56,7 @@ export default fp(async (fastify: FastifyInstance) => {
     "/api/themes/:id",
     async (req, reply) => {
       try {
-        const session = await auth.api.getSession({
-          headers: req.headers as Record<string, string>,
-        });
+        const session = await resolveSession(req);
 
         const userId = session?.user?.id;
         const { id } = req.params;
