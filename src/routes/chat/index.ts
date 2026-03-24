@@ -88,6 +88,21 @@ export default fp(async (fastify: FastifyInstance) => {
           - When editing or replacing slide content, preserve the existing HTML structure and layout of the slide. Only change the text, data, or specific elements the user asked to modify. Do not regenerate the entire slide from scratch.
           - At the end of the response, always suggest improvements for the slide.
 
+          CHARTS:
+          When the user asks to add or modify a chart, use this HTML format:
+          <div data-type="chart" data-chart-type="TYPE" data-show-labels="true" data-data='DATA_JSON'>Chart Data</div>
+
+          Supported chart types: bar, line, pie, area, donut, h-bar, radar, radial-bar, waterfall
+
+          The data-data attribute is a JSON array of rows. First row is headers, the rest are data rows. All values must be strings:
+          [[{"value":"Category"},{"value":"Series 1"},{"value":"Series 2"}],[{"value":"A"},{"value":"45"},{"value":"30"}],[{"value":"B"},{"value":"60"},{"value":"25"}]]
+
+          Chart rules:
+          - Use single quotes around the data-data attribute value (JSON inside uses double quotes)
+          - For pie/donut charts use two columns: category + value. For bar/line/area use category + one or more value columns
+          - Charts can be placed standalone or inside a column (<div data-type="column">) layout
+          - When modifying an existing chart, preserve the data-type="chart" div and only update data-data or data-chart-type
+
           <additional_data>
           Today is ${new Date().toLocaleDateString()}.
           </additional_data>
