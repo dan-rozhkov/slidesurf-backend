@@ -85,12 +85,18 @@ export const threeCols: SlideTemplate = {
     <h1>Заголовок</h1>
     <div data-type="columns">
       <div data-type="column">
+        <p style="text-align: center"><span data-type="icon" data-icon-name="lightbulb" data-icon-size="xl"></span></p>
+        <h3>Заголовок</h3>
         <p>Текст</p>
       </div>
       <div data-type="column">
+        <p style="text-align: center"><span data-type="icon" data-icon-name="shield" data-icon-size="xl"></span></p>
+        <h3>Заголовок</h3>
         <p>Текст</p>
       </div>
       <div data-type="column">
+        <p style="text-align: center"><span data-type="icon" data-icon-name="zap" data-icon-size="xl"></span></p>
+        <h3>Заголовок</h3>
         <p>Текст</p>
       </div>
     </div>
