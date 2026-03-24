@@ -15,6 +15,9 @@ export const presentations = pgTable("presentations", {
   // Store slides as JSON array
   slides: jsonb("slides").$type<Slide[]>().notNull().default([]),
 
+  // Font size preset (S/M/L)
+  fontSizePreset: text("font_size_preset"),
+
   // Новые столбцы
   isDeleted: boolean("is_deleted").notNull().default(false),
   isShared: boolean("is_shared").notNull().default(false),

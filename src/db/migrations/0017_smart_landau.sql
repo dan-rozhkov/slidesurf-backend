@@ -1,0 +1,1 @@
+ALTER TABLE "presentations" ADD COLUMN "font_size_preset" text;
