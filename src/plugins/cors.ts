@@ -11,6 +11,7 @@ export default fp(async (fastify) => {
       "X-Subscription-Plan",
       "X-Subscription-Limits",
       "X-Plan-Id",
+      "set-auth-token",
     ],
   });
 });
