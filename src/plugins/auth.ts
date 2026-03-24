@@ -21,7 +21,17 @@ async function betterAuthHandler(request: FastifyRequest, reply: FastifyReply) {
   const response = await auth.handler(req);
 
   reply.status(response.status);
-  response.headers.forEach((value, key) => reply.header(key, value));
+
+  // Set-Cookie headers must be set individually — Headers.forEach
+  // joins them into one comma-separated string which browsers can't parse.
+  const setCookies = response.headers.getSetCookie();
+  for (const cookie of setCookies) {
+    reply.header("set-cookie", cookie);
+  }
+  response.headers.forEach((value, key) => {
+    if (key !== "set-cookie") reply.header(key, value);
+  });
+
   reply.send(response.body ? await response.text() : null);
 }
 
