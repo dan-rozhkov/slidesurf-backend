@@ -5,8 +5,7 @@ import { fromNodeHeaders } from "better-auth/node";
 import { splitCookiesString } from "set-cookie-parser";
 
 async function betterAuthHandler(request: FastifyRequest, reply: FastifyReply) {
-  const proto = request.headers['x-forwarded-proto'] || 'http';
-  const url = new URL(request.url, `${proto}://${request.headers.host}`);
+  const url = new URL(request.url, `${request.protocol}://${request.hostname}`);
 
   const headers = new Headers();
   Object.entries(request.headers).forEach(([key, value]) => {
