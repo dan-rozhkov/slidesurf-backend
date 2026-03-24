@@ -107,6 +107,11 @@ export function createSlidesGenerationPrompt(
     - All data attributes must be filled in the response
     - <div data-type="feature"> MUST be filled with data-title and data-content
     - <div data-type="timeline-item"> MUST be filled with data-title and data-content
+    - You can use inline icons: <span data-type="icon" data-icon-name="ICON_NAME" data-icon-size="SIZE"></span>
+    - Icon names are from Lucide icons library (kebab-case), e.g.: rocket, target, trophy, lightbulb, shield, zap, users, globe, lock, clock, bar-chart, settings, code, layers, cpu, database, cloud, heart, star, check-circle, trending-up, award, briefcase, compass, eye, gift, palette
+    - Icon sizes: "sm", "md", "lg", "xl". Use "xl" for standalone decorative icons in cards/columns, "md" for inline with text
+    - Use icons in cards and column layouts to make slides more visually appealing
+    - Each icon in a group (e.g. 3 cards) MUST have a DIFFERENT icon name relevant to the content
     - Content tone should be ${contentSettings?.tone || "neutral"}
     - Content should be addressed to ${contentSettings?.whom || "all"}
     - Content style will be ${contentSettings?.contentStyle || "less"}

@@ -136,7 +136,7 @@ export const cards: SlideTemplate = {
       <div data-type="column">
         <div data-type="card">
           <p>
-            <span style="font-size: 3em;"><strong>1</strong></span>
+            <span data-type="icon" data-icon-name="rocket" data-icon-size="xl"></span>
           </p>
           <p>Текст</p>
         </div>
@@ -144,7 +144,7 @@ export const cards: SlideTemplate = {
       <div data-type="column">
         <div data-type="card">
           <p>
-            <span style="font-size: 3em;"><strong>2</strong></span>
+            <span data-type="icon" data-icon-name="target" data-icon-size="xl"></span>
           </p>
           <p>Текст</p>
         </div>
@@ -152,7 +152,7 @@ export const cards: SlideTemplate = {
       <div data-type="column">
         <div data-type="card">
           <p>
-            <span style="font-size: 3em;"><strong>3</strong></span>
+            <span data-type="icon" data-icon-name="trophy" data-icon-size="xl"></span>
           </p>
           <p>Текст</p>
         </div>
@@ -289,6 +289,36 @@ export const titleWithFeaturesList: SlideTemplate = {
       <div data-type="feature" data-title="Заголовок" data-content="Текст"></div>
       <div data-type="feature" data-title="Заголовок" data-content="Текст"></div>
       <div data-type="feature" data-title="Заголовок" data-content="Текст"></div>
+    </div>
+  `,
+};
+
+export const threeColsWithIcons: SlideTemplate = {
+  name: "threeColsWithIcons",
+  description: "Слайд с тремя колонками и иконками",
+  layout: SlideLayout.WITHOUT,
+  verticalAlign: SlideVerticalAlign.CENTER,
+  content: dedent.withOptions({
+    escapeSpecialCharacters: false,
+  })`
+    <h1 style="text-align: center">Заголовок</h1>
+    <p style="text-align: center">Подзаголовок</p>
+    <div data-type="columns">
+      <div data-type="column">
+        <p style="text-align: center"><span data-type="icon" data-icon-name="lightbulb" data-icon-size="xl"></span></p>
+        <h3 style="text-align: center">Заголовок</h3>
+        <p style="text-align: center">Текст</p>
+      </div>
+      <div data-type="column">
+        <p style="text-align: center"><span data-type="icon" data-icon-name="shield" data-icon-size="xl"></span></p>
+        <h3 style="text-align: center">Заголовок</h3>
+        <p style="text-align: center">Текст</p>
+      </div>
+      <div data-type="column">
+        <p style="text-align: center"><span data-type="icon" data-icon-name="zap" data-icon-size="xl"></span></p>
+        <h3 style="text-align: center">Заголовок</h3>
+        <p style="text-align: center">Текст</p>
+      </div>
     </div>
   `,
 };
@@ -547,6 +577,7 @@ export const SLIDE_TEMPLATES = [
   titleWithListOptions,
   titleWithTable,
   titleWithFeaturesList,
+  threeColsWithIcons,
   titleWithTimeline,
   arrowsHorizontal,
   pyramid,
@@ -571,6 +602,7 @@ export const SLIDE_TEMPLATES_FOR_GENERATION = [
   titleWithListOptions,
   titleWithTable,
   titleWithFeaturesList,
+  threeColsWithIcons,
   titleWithTimeline,
   arrowsHorizontal,
   pyramid,
