@@ -3,6 +3,7 @@ import { FastifyRequest, FastifyReply } from "fastify";
 import { auth } from "@/auth";
 import { fromNodeHeaders } from "better-auth/node";
 import { splitCookiesString } from "set-cookie-parser";
+import { resolveSession } from "@/hooks/auth-hook";
 
 async function betterAuthHandler(request: FastifyRequest, reply: FastifyReply) {
   const url = new URL(request.url, `${request.protocol}://${request.hostname}`);
@@ -47,9 +48,7 @@ export default fp(async (fastify) => {
     "/api/api-keys",
     async (request: FastifyRequest, reply: FastifyReply) => {
       try {
-        const session = await auth.api.getSession({
-          headers: fromNodeHeaders(request.headers),
-        });
+        const session = await resolveSession(request);
         if (!session) {
           return reply.code(401).send({ error: "Unauthorized" });
         }
@@ -72,9 +71,7 @@ export default fp(async (fastify) => {
       reply: FastifyReply
     ) => {
       try {
-        const session = await auth.api.getSession({
-          headers: fromNodeHeaders(request.headers),
-        });
+        const session = await resolveSession(request);
         if (!session) {
           return reply.code(401).send({ error: "Unauthorized" });
         }
@@ -98,9 +95,7 @@ export default fp(async (fastify) => {
       reply: FastifyReply
     ) => {
       try {
-        const session = await auth.api.getSession({
-          headers: fromNodeHeaders(request.headers),
-        });
+        const session = await resolveSession(request);
         if (!session) {
           return reply.code(401).send({ error: "Unauthorized" });
         }

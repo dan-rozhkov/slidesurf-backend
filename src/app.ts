@@ -45,27 +45,6 @@ export async function buildApp() {
     }
   );
 
-  // Convert Bearer token to session cookie for non-auth routes.
-  // The bearer plugin handles /api/auth/* via auth.handler(); other routes
-  // call auth.api.getSession() directly and need the cookie injected.
-  const isSecure = process.env.BETTER_AUTH_URL?.startsWith("https://");
-  const sessionCookieName = isSecure
-    ? "__Secure-better-auth.session_token"
-    : "better-auth.session_token";
-
-  app.addHook("onRequest", async (request) => {
-    if (request.url.startsWith("/api/auth/")) return;
-    const authHeader = request.headers.authorization;
-    if (authHeader?.startsWith("Bearer ")) {
-      const token = authHeader.slice(7);
-      // Token from set-auth-token is already signed (payload.signature format)
-      const signedToken = token.includes(".") ? token.replaceAll("=", "") : token;
-      const existing = request.headers.cookie;
-      const cookiePair = `${sessionCookieName}=${signedToken}`;
-      request.headers.cookie = existing ? `${existing}; ${cookiePair}` : cookiePair;
-    }
-  });
-
   // Register plugins (order matters)
   await app.register(corsPlugin);
   await app.register(cookie);

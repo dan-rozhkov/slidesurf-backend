@@ -1,16 +1,13 @@
 import fp from "fastify-plugin";
 import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
-import { auth } from "@/auth";
-import { authHook } from "@/hooks/auth-hook";
+import { authHook, resolveSession } from "@/hooks/auth-hook";
 import { ThemesService } from "@/services/themes-service";
 
 export default fp(async (fastify: FastifyInstance) => {
   // GET /api/themes - get available themes (optional auth)
   fastify.get("/api/themes", async (req: FastifyRequest, reply: FastifyReply) => {
     try {
-      const session = await auth.api.getSession({
-        headers: req.headers as Record<string, string>,
-      });
+      const session = await resolveSession(req);
 
       const userId = session?.user?.id;
       const themes = await ThemesService.getAvailableThemes(userId);
