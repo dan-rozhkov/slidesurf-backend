@@ -4,7 +4,8 @@ import { auth } from "@/auth";
 import { fromNodeHeaders } from "better-auth/node";
 
 async function betterAuthHandler(request: FastifyRequest, reply: FastifyReply) {
-  const url = new URL(request.url, `http://${request.headers.host}`);
+  const proto = request.headers['x-forwarded-proto'] || 'http';
+  const url = new URL(request.url, `${proto}://${request.headers.host}`);
 
   const headers = new Headers();
   Object.entries(request.headers).forEach(([key, value]) => {
