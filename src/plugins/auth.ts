@@ -2,6 +2,7 @@ import fp from "fastify-plugin";
 import { FastifyRequest, FastifyReply } from "fastify";
 import { auth } from "@/auth";
 import { fromNodeHeaders } from "better-auth/node";
+import { splitCookiesString } from "set-cookie-parser";
 
 async function betterAuthHandler(request: FastifyRequest, reply: FastifyReply) {
   const proto = request.headers['x-forwarded-proto'] || 'http';
@@ -21,17 +22,17 @@ async function betterAuthHandler(request: FastifyRequest, reply: FastifyReply) {
   const response = await auth.handler(req);
 
   reply.status(response.status);
-
-  // Set-Cookie headers must be set individually — Headers.forEach
-  // joins them into one comma-separated string which browsers can't parse.
-  const setCookies = response.headers.getSetCookie();
-  for (const cookie of setCookies) {
-    reply.header("set-cookie", cookie);
+  for (const [key, value] of response.headers) {
+    if (key === "set-cookie") {
+      // Headers.entries() joins multiple Set-Cookie into one string.
+      // Split them so each cookie gets its own header.
+      for (const cookie of splitCookiesString(value)) {
+        reply.header("set-cookie", cookie);
+      }
+    } else {
+      reply.header(key, value);
+    }
   }
-  response.headers.forEach((value, key) => {
-    if (key !== "set-cookie") reply.header(key, value);
-  });
-
   reply.send(response.body ? await response.text() : null);
 }
 
