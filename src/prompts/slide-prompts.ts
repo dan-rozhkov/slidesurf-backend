@@ -107,6 +107,9 @@ export function createSlidesGenerationPrompt(
     - All data attributes must be filled in the response
     - <div data-type="feature"> MUST be filled with data-title and data-content
     - <div data-type="timeline-item"> MUST be filled with data-title and data-content
+    - CHARTS: When using the twoColsWithBarChart template, the data-data attribute must contain a JSON array of rows. First row is headers, remaining rows are data. Format: [[{"value":"Category"},{"value":"Series 1"}],[{"value":"A"},{"value":"45"}],...]
+    - Chart value columns (all columns except the first) must contain ONLY numeric values as strings (e.g. "45", "100", "3.5"). The first column contains category labels (text). NEVER put text in value columns.
+    - Chart data-data must ALWAYS be filled with realistic, meaningful data relevant to the slide topic. Never leave data-data empty, with placeholder template values, or incomplete.
     - You can use inline icons: <span data-type="icon" data-icon-name="ICON_NAME" data-icon-size="SIZE"></span>
     - Icon names are from Lucide icons library (kebab-case), e.g.: rocket, target, trophy, lightbulb, shield, zap, users, globe, lock, clock, bar-chart, settings, code, layers, cpu, database, cloud, heart, star, check-circle, trending-up, award, briefcase, compass, eye, gift, palette
     - Icon sizes: "sm", "md", "lg", "xl". Use "xl" for standalone decorative icons in cards/columns, "md" for inline with text

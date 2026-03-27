@@ -94,10 +94,12 @@ export default fp(async (fastify: FastifyInstance) => {
 
           Supported chart types: bar, line, pie, area, donut, h-bar, radar, radial-bar, waterfall
 
-          The data-data attribute is a JSON array of rows. First row is headers, the rest are data rows. All values must be strings:
+          The data-data attribute is a JSON array of rows. First row is headers, the rest are data rows. Each cell is {"value":"..."} where every value is a string:
           [[{"value":"Category"},{"value":"Series 1"},{"value":"Series 2"}],[{"value":"A"},{"value":"45"},{"value":"30"}],[{"value":"B"},{"value":"60"},{"value":"25"}]]
 
           Chart rules:
+          - The first column contains category labels (text). All other columns contain ONLY numeric values represented as strings (e.g. "45", "100", "3.5"). NEVER put text like "Good", "High", or any non-numeric value in data columns.
+          - ALWAYS fill chart data with realistic, meaningful numeric values. Never leave data-data empty or incomplete.
           - Use single quotes around the data-data attribute value (JSON inside uses double quotes)
           - For pie/donut charts use two columns: category + value. For bar/line/area use category + one or more value columns
           - Charts can be placed standalone or inside a column (<div data-type="column">) layout
