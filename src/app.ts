@@ -1,5 +1,6 @@
 import Fastify from "fastify";
 import cookie from "@fastify/cookie";
+import rateLimit from "@fastify/rate-limit";
 
 // Plugins
 import corsPlugin from "./plugins/cors";
@@ -46,6 +47,13 @@ export async function buildApp() {
   );
 
   // Register plugins (order matters)
+  // Keys on request.ip, which with trustProxy:true comes from X-Forwarded-For —
+  // the reverse proxy MUST overwrite that header or the limit is spoofable
+  await app.register(rateLimit, {
+    global: true,
+    max: 300,
+    timeWindow: "1 minute",
+  });
   await app.register(corsPlugin);
   await app.register(cookie);
   await app.register(multipartPlugin);

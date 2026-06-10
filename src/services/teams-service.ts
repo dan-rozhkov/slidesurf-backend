@@ -28,6 +28,7 @@ import {
 const INVITATION_EXPIRY_DAYS = 7;
 const MAX_INVITATIONS_PER_HOUR = 10;
 const INVITATION_TOKEN_LENGTH = 32;
+const MAX_OWNED_TEAMS_PER_USER = 10;
 
 function getBaseUrl(): string {
   const baseUrl = process.env.BETTER_AUTH_URL;
@@ -81,6 +82,17 @@ export async function createTeam(
   const validationResult = createTeamSchema.safeParse({ name, description });
   if (!validationResult.success) {
     throw new Error(validationResult.error.errors[0].message);
+  }
+
+  const ownedTeams = await db
+    .select({ id: teams.id })
+    .from(teams)
+    .where(eq(teams.ownerId, userId));
+
+  if (ownedTeams.length >= MAX_OWNED_TEAMS_PER_USER) {
+    throw new Error(
+      `You can own at most ${MAX_OWNED_TEAMS_PER_USER} teams. Delete an existing team to create a new one.`
+    );
   }
 
   const teamId = nanoid();
@@ -255,13 +267,15 @@ export async function inviteMember(
     throw new Error("An invitation has already been sent to this email");
   }
 
+  // Rate limit is per inviter (not per team) so creating extra teams
+  // doesn't multiply the allowed email volume
   const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
   const recentInvitations = await db
     .select()
     .from(teamInvitations)
     .where(
       and(
-        eq(teamInvitations.teamId, teamId),
+        eq(teamInvitations.invitedBy, userId),
         gt(teamInvitations.createdAt, oneHourAgo)
       )
     );

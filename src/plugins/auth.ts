@@ -75,8 +75,10 @@ export default fp(async (fastify) => {
         if (!session) {
           return reply.code(401).send({ error: "Unauthorized" });
         }
+        // Only pass through whitelisted fields — better-auth treats the rest
+        // (rateLimitMax, remaining, permissions, …) as server-only
         const result = await auth.api.createApiKey({
-          body: request.body as any,
+          body: { name: request.body?.name },
           headers: fromNodeHeaders(request.headers),
         });
         return reply.send(result);
