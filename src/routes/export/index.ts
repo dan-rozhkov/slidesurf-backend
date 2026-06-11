@@ -4,6 +4,7 @@ const PptxGenJS = (PptxGenJSModule as any).default || PptxGenJSModule;
 import sharp from "sharp";
 import { authHook } from "@/hooks/auth-hook";
 import { logUserAction } from "@/services/action-logger";
+import { isSafeImageUrl } from "@/utils/ssrf-guard";
 import type { FastifyBaseLogger } from "fastify";
 
 const IMAGE_FETCH_TIMEOUT_MS = 10_000;
@@ -61,6 +62,10 @@ function createImageCache(): ImageCache {
 // Function to fetch image and convert to base64
 async function fetchImageAsBase64(url: string, log: FastifyBaseLogger): Promise<string | null> {
   try {
+    if (!(await isSafeImageUrl(url))) {
+      log.warn(`Blocked unsafe image URL: ${url.substring(0, 100)}`);
+      return null;
+    }
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), IMAGE_FETCH_TIMEOUT_MS);
     const response = await fetch(url, {
@@ -133,6 +138,10 @@ function dataUrlToBuffer(dataUrl: string): Buffer | null {
 
 async function fetchImageBuffer(url: string, log: FastifyBaseLogger): Promise<Buffer | null> {
   try {
+    if (!(await isSafeImageUrl(url))) {
+      log.warn(`Blocked unsafe image URL: ${url.substring(0, 100)}`);
+      return null;
+    }
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), IMAGE_FETCH_TIMEOUT_MS);
     const response = await fetch(url, {

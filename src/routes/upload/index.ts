@@ -1,7 +1,19 @@
 import fp from "fastify-plugin";
 import { FastifyInstance } from "fastify";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { nanoid } from "nanoid";
 import { authHook } from "@/hooks/auth-hook.js";
+import { getPresentationById } from "@/services/presentations-service.js";
+
+// Build a non-guessable, traversal-proof S3 key segment from a user filename:
+// keep only the (sanitized) extension, randomize the basename.
+function safeKeySegment(originalName: string): string {
+  const ext = (originalName.split(".").pop() ?? "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "")
+    .slice(0, 8);
+  return ext ? `${nanoid()}.${ext}` : nanoid();
+}
 
 const s3Client = new S3Client({
   region: process.env.AWS_REGION!,
@@ -52,8 +64,16 @@ async function uploadRoutes(fastify: FastifyInstance) {
           return reply.code(400).send({ error: "Invalid file type" });
         }
 
+        const presentation = await getPresentationById(
+          presentationId,
+          request.userId
+        );
+        if (!presentation) {
+          return reply.code(403).send({ error: "Forbidden" });
+        }
+
         const buffer = await data.toBuffer();
-        const filename = `${presentationId}/${data.filename}`;
+        const filename = `${presentationId}/${safeKeySegment(data.filename)}`;
 
         const params = {
           Bucket: process.env.AWS_BUCKET_NAME!,
@@ -100,7 +120,9 @@ async function uploadRoutes(fastify: FastifyInstance) {
           return reply.code(400).send({ error: "Invalid file type" });
         }
 
-        const filename = `attachments/${data.filename}`;
+        const filename = `attachments/${request.userId}/${safeKeySegment(
+          data.filename
+        )}`;
 
         const params = {
           Bucket: process.env.AWS_BUCKET_NAME!,
