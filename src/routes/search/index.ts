@@ -213,7 +213,7 @@ export default fp(async (fastify: FastifyInstance) => {
           `https://api.freepik.com/v1/resources?${queryParams.toString()}`,
           {
             headers: {
-              "x-freepik-api-key": process.env.FREPIK_API_KEY as string,
+              "x-freepik-api-key": process.env.FREEPIK_API_KEY as string,
             },
           }
         );
