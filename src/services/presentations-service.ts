@@ -6,6 +6,32 @@ import { nanoid } from "@/utils/nanoid";
 import { SLIDE_TEMPLATES } from "@/templates/new-slide-templates";
 import { Presentation, Slide, SlidesTemplates } from "@/types";
 
+// Columns a client is allowed to set when creating/updating a presentation.
+// Everything else (id, userId, createdAt, updatedAt, isDeleted) is server-controlled
+// — keep them out of this list to prevent mass-assignment (e.g. ownership transfer
+// via a body-supplied userId, or un-deleting via isDeleted). isShared is here on
+// purpose: the share dialog toggles it through the same update endpoint.
+const UPDATABLE_PRESENTATION_FIELDS = [
+  "title",
+  "slides",
+  "themeId",
+  "fontSizePreset",
+  "planId",
+  "isShared",
+] as const satisfies readonly (keyof Presentation)[];
+
+function pickUpdatablePresentationFields(
+  input: Partial<Presentation>
+): Partial<Presentation> {
+  const out: Partial<Presentation> = {};
+  for (const key of UPDATABLE_PRESENTATION_FIELDS) {
+    if (input[key] !== undefined) {
+      (out as Record<string, unknown>)[key] = input[key];
+    }
+  }
+  return out;
+}
+
 async function getUserTeamIds(userId: string): Promise<string[]> {
   const memberships = await db
     .select({ teamId: teamMembers.teamId })
@@ -42,10 +68,11 @@ export async function createPresentation(
   const [newPresentation] = await db
     .insert(presentations)
     .values({
+      ...pickUpdatablePresentationFields(presentation),
+      title: presentation.title,
+      themeId: presentation.themeId,
       id: nanoid(),
-      ...presentation,
       userId,
-      planId: presentation.planId,
     })
     .returning();
 
@@ -174,7 +201,7 @@ export async function updatePresentation(
 
   const [updatedPresentation] = await db
     .update(presentations)
-    .set({ ...presentation, updatedAt: new Date() })
+    .set({ ...pickUpdatablePresentationFields(presentation), updatedAt: new Date() })
     .where(eq(presentations.id, presentationId))
     .returning();
 
