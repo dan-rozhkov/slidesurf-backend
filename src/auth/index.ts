@@ -56,7 +56,7 @@ export const auth = betterAuth({
           to: user.email,
           ...emailTemplate,
         });
-        console.log(`Password reset email sent to ${user.email}`);
+        console.log("Password reset email sent");
       } catch (error) {
         console.error("Failed to send password reset email:", error);
         throw new Error("Failed to send password reset email");
@@ -67,9 +67,7 @@ export const auth = betterAuth({
     }: {
       user: { email: string; name?: string };
     }) => {
-      console.log(
-        `Password for user ${user.email} has been reset successfully.`
-      );
+      console.log("Password reset completed successfully");
     },
   },
   plugins: [
